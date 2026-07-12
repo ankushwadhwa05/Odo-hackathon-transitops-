@@ -11,6 +11,7 @@ SETUP:
    VITE base pointing here (see note at bottom of file).
 """
 
+import os
 import bcrypt
 import jwt
 import datetime
@@ -18,19 +19,22 @@ from functools import wraps
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 DB_CONFIG = {
-    "host": "127.0.0.1",
-    "port": 3306,
-    "user": "root",
-    "password": "root",
-    "database": "cleanlayoffs"
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT", 3306)),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME")
 }
 
-JWT_SECRET = "change-this-secret-for-real-use"
+JWT_SECRET = os.getenv("JWT_SECRET")
 
 DEMO_USERS = [
     ("fleet@transitops.in", "FleetManager", "Fleet Manager"),

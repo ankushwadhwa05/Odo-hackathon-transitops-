@@ -7,20 +7,24 @@ EDIT the DB_CONFIG block below with your actual MySQL credentials, then run:
     python seed_data.py
 """
 
+import os
 import random
 from datetime import date, timedelta
 import mysql.connector
 from faker import Faker
+from dotenv import load_dotenv
+
+load_dotenv()
 
 fake = Faker()
 random.seed(42)
 
 DB_CONFIG = {
-    "host": "127.0.0.1",
-    "port":3306,
-    "user": "root",
-    "password": "root",
-    "database": "cleanlayoffs"
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT", 3306)),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME")
 }
 
 VEHICLE_TYPES = ["Van", "Truck", "Mini Truck", "Trailer"]
