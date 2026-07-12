@@ -48,3 +48,55 @@ CREATE TABLE Driver (
     status_id INT NOT NULL,
     FOREIGN KEY (status_id) REFERENCES Driver_Status(status_id)
 );
+-- Trip
+CREATE TABLE Trip (
+    trip_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    driver_id INT NOT NULL,
+    source VARCHAR(100) NOT NULL,
+    destination VARCHAR(100) NOT NULL,
+    cargo_weight DECIMAL(10,2) NOT NULL,
+    planned_distance DECIMAL(10,2) NOT NULL,
+    final_odometer DECIMAL(10,2),
+    fuel_consumed DECIMAL(10,2),
+    trip_status ENUM('Draft','Dispatched','Completed','Cancelled') NOT NULL DEFAULT 'Draft',
+    dispatched_at DATETIME,
+    completed_at DATETIME,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicle(vehicle_id),
+    FOREIGN KEY (driver_id) REFERENCES Driver(driver_id)
+);
+
+-- Maintenance
+CREATE TABLE Maintenance (
+    maintenance_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL DEFAULT 0,
+    service_date DATE NOT NULL,
+    maintenance_status ENUM('Active','Closed') NOT NULL DEFAULT 'Active',
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicle(vehicle_id)
+);
+
+-- Fuel_Log
+CREATE TABLE Fuel_Log (
+    fuel_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    trip_id INT NULL,
+    liters DECIMAL(10,2) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL,
+    log_date DATE NOT NULL,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicle(vehicle_id),
+    FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
+);
+
+-- Expense
+CREATE TABLE Expense (
+    expense_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    trip_id INT NULL,
+    expense_type VARCHAR(30) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    expense_date DATE NOT NULL,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicle(vehicle_id),
+    FOREIGN KEY (trip_id) REFERENCES Trip(trip_id)
+);
